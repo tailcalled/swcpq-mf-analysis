@@ -1,3 +1,8 @@
+secrets.sh
+SWCPQ-Features-Aggregated-Dataset-January2025
+output.txt
+plots
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
