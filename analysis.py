@@ -3,6 +3,8 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from shutil import rmtree
+from os import makedirs
 
 with open("SWCPQ-Features-Aggregated-Dataset-January2025/codebook.html", "r") as f:
     soup = BeautifulSoup(f.read(), "html.parser")
@@ -59,6 +61,12 @@ with open("sex_override.json", "r") as f:
         male[sex_data.index.get_loc(character)] = (1 if sex == "male" else 0)
 data["male"] = male
 
+try:
+    rmtree("plots")
+except FileNotFoundError:
+    pass
+makedirs("plots")
+
 sex_pcs = PCA(2).fit_transform(sex_data)
 plt.scatter(sex_pcs[male, 0], sex_pcs[male, 1])
 plt.scatter(sex_pcs[~male, 0], sex_pcs[~male, 1])
@@ -88,7 +96,13 @@ plt.scatter(feminine[male], sexdia[male])
 plt.scatter(feminine[~male], sexdia[~male])
 plt.xlabel("Femininity according to\nstandards for women")
 plt.ylabel("Multivariate sex-diagnostic axis")
-plt.savefig("plots/02_mf_vs_sexdia.png"); plt.close()
+plt.savefig("plots/03_mf_vs_sexdia.png"); plt.close()
+
+plt.hist(data["masculine -> feminine"], bins=100)
+plt.savefig("plots/04_mf_distr.png"); plt.close()
+
+plt.hist(sexdia, bins=100)
+plt.savefig("plots/05_sexdia_distr.png"); plt.close()
 
 for character in data["sex_prediction"].sort_values().index:
     print(data["sex_prediction"][character], character)
